@@ -66,18 +66,27 @@ const data = {
 // Only edit below this comment
 
 const createHtml = (id, athlete) => {
+  // Extract relevant data from the athlete object
   const { firstName, surname, races } = athlete;
+  
+  // Select the most recent race for displaying latest race details
   const latestRace = races[races.length - 1];
   const date = new Date(latestRace.date);
+  
+  // Calculate the total time in minutes from the latest race's time array
   const totalMinutes = latestRace.time.reduce((a, b) => a + b, 0);
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
+  // Create a document fragment to hold the elements
   const fragment = document.createDocumentFragment();
+
+  // Create and append the heading with the athlete's ID
   const title = document.createElement('h2');
-  title.textContent = id;  // Changed from `${firstName} ${surname}` to ID
+  title.textContent = id; // Use the athlete's ID as the header text
   fragment.appendChild(title);
 
+  // Create and fill in the details list (dl) with athlete data
   const list = document.createElement('dl');
   list.innerHTML = /* html */ `
     <dt>Athlete</dt>
@@ -93,15 +102,20 @@ const createHtml = (id, athlete) => {
     <dd>${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}</dd>
   `;
 
+  // Append the details list to the fragment
   fragment.appendChild(list);
+
+  // Return the complete document fragment ready for DOM insertion
   return fragment;
 };
 
-// Applying changes to the DOM
+// Apply changes to the DOM by appending created HTML for each athlete
 const athletes = data.response.data;
 Object.entries(athletes).forEach(([key, athlete]) => {
-  const element = document.querySelector(`[data-athlete="${key}"]`); // Changed to use data-athlete attribute
+  // Find the corresponding section element by athlete ID
+  const element = document.querySelector(`[data-athlete="${key}"]`);
   if (element) {
-    element.appendChild(createHtml(key, athlete));  // Now passing ID along with athlete data
+    // Append the created HTML to the selected element
+    element.appendChild(createHtml(key, athlete));
   }
 });
