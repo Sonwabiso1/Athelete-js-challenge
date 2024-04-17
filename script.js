@@ -66,44 +66,42 @@ const data = {
 // Only edit below this comment
 
 const createHtml = (athlete) => {
-  firstName, surname, id, races = athlete
-  [date], [time] = races.reverse()
+  const { firstName, surname, races } = athlete;
+  const latestRace = races[races.length - 1];
+  const date = new Date(latestRace.date);
+  const totalMinutes = latestRace.time.reduce((a, b) => a + b, 0);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
 
   const fragment = document.createDocumentFragment();
-
-  title = document.createElement(h2);
-  title= id;
+  const title = document.createElement('h2');
+  title.textContent = `${firstName} ${surname}`;
   fragment.appendChild(title);
 
-  const list = document.createElement(dl);
-
-  const day = date.getDate();
-  const month = MONTHS[date.month];
-  const year = date.year;
-
-  first, second, third, fourth = timeAsArray;
-  total = first + second + third + fourth;
-
-  const hours = total / 60;
-  const minutes = total / hours / 60;
-
+  const list = document.createElement('dl');
   list.innerHTML = /* html */ `
     <dt>Athlete</dt>
-    <dd>${firstName surname}</dd>
+    <dd>${firstName} ${surname}</dd>
 
     <dt>Total Races</dt>
-    <dd>${races}</dd>
+    <dd>${races.length}</dd>
 
     <dt>Event Date (Latest)</dt>
-    <dd>${day month year}</dd>
+    <dd>${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}</dd>
 
     <dt>Total Time (Latest)</dt>
-    <dd>${hours.padStart(2, 0) minutes}</dd>
+    <dd>${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}</dd>
   `;
 
   fragment.appendChild(list);
-}
+  return fragment;
+};
 
-[NM372], [SV782] = data
-document.querySelector(NM372).appendChild(createHtml(NM372));
-document.querySelector(SV782).appendChild(createHtml(SV782));
+// Applying changes to the DOM
+const athletes = data.response.data;
+Object.entries(athletes).forEach(([key, athlete]) => {
+  const element = document.querySelector(`[data-athlete="${key}"]`); // Changed to use data-athlete attribute
+  if (element) {
+    element.appendChild(createHtml(athlete));
+  }
+});
