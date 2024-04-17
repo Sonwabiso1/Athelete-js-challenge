@@ -65,7 +65,7 @@ const data = {
 
 // Only edit below this comment
 
-const createHtml = (athlete) => {
+const createHtml = (id, athlete) => {
   const { firstName, surname, races } = athlete;
   const latestRace = races[races.length - 1];
   const date = new Date(latestRace.date);
@@ -75,7 +75,7 @@ const createHtml = (athlete) => {
 
   const fragment = document.createDocumentFragment();
   const title = document.createElement('h2');
-  title.textContent = `${firstName} ${surname}`;
+  title.textContent = id;  // Changed from `${firstName} ${surname}` to ID
   fragment.appendChild(title);
 
   const list = document.createElement('dl');
@@ -102,6 +102,6 @@ const athletes = data.response.data;
 Object.entries(athletes).forEach(([key, athlete]) => {
   const element = document.querySelector(`[data-athlete="${key}"]`); // Changed to use data-athlete attribute
   if (element) {
-    element.appendChild(createHtml(athlete));
+    element.appendChild(createHtml(key, athlete));  // Now passing ID along with athlete data
   }
 });
